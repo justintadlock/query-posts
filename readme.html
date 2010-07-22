@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>A guide to the Query Posts widget</title>
+
+<link rel="stylesheet" href="readme.css" type="text/css" media="screen" />
+
+</head>
+<body>
+
+<h1 title="A guide to using the Query Posts widget">A guide to the Query Posts widget</h1>
+
+<p><em>Query Posts</em> is a widget that allows you to display posts in any way you want. </p>
+
+<p>This is the first official release of the plugin.  Much of it is experimental, and I do value feedback on what could make it better.  Although it is experimental, the plugin is very stable.  Follow this guide to get your widget up and running.  If something's not covered here, there are plenty of links with extra information to help you along.</p>
+
+<h2>How to install the plugin</h2>
+
+<ol>
+	<li>Uzip the <code>query-posts.zip</code> folder.</li>
+	<li>Upload the <code>query-posts</code> folder to your <code>/wp-content/plugins</code> directory.</li>
+	<li>In your WordPress dashboard, head over to the <em>Plugins</em> section.</li>
+	<li>Activate <em>Query Posts</em>.</li>
+</ol>
+
+<h2>Widget Settings</h2>
+
+<p>There are several settings for the widget.  You need to know how the <a href="http://codex.wordpress.org/Template_Tags/query_posts" title="WordPress Codex: query_posts()">query_posts()</a> function works to use them.  You need at least a very basic understanding of its parameters to even use this widget.</p>
+
+<dl>
+	<dt>Ordering and numbering</dt>
+	<dd><code>showposts</code> &mdash; number of posts</dd>
+	<dd><code>posts_per_page</code> &mdash; how many posts per page</dd>
+	<dd><code>order</code> &mdash; order posts in ascending or descending order</dd>
+	<dd><code>orderby</code> &mdash; what the posts should be ordered by</dd>
+	<dd><code>offset</code> &mdash; how many posts to skip over</dd>
+	<dd><code>paged</code> &mdash; show posts from a particular page (i.e. page 1, 2, 3, etc.)</dd>
+
+	<dt>Post and page parameters (<a href="http://codex.wordpress.org/Template_Tags/query_posts#Post_.26_Page_Parameters" title="Post and page parameters">Reference</a>)</dt>
+	<dd><code>p</code> &mdash; post ID</dd>
+	<dd><code>name</code> &mdash; post slug</dd>
+	<dd><code>page_id</code> &mdash; page ID</dd>
+	<dd><code>pagename</code> &mdash; page path</dd>
+	<dd><code>post__in</code> &mdash; comma-separated array of post IDs</dd>
+	<dd><code>post__not_in</code> &mdash; comma-separated array of post IDs</dd>
+
+	<dt>Sticky post parameters (<a href="http://codex.wordpress.org/Template_Tags/query_posts#Sticky_Post_Parameters" title="Sticky post parameters">Reference</a>)</dt>
+	<dd><code>caller_get_posts</code> &mdash; true or false (true excludes stickies)</dd>
+
+	<dt>Category parameters (<a href="http://codex.wordpress.org/Template_Tags/query_posts#Category_Parameters" title="Category parameters">Reference</a>)</dt>
+	<dd><code>cat</code> &mdash; category ID(s)</dd>
+	<dd><code>category_name</code> &mdash; category name/slug</dd>
+	<dd><code>category__and</code> &mdash; array of comma-separated category IDs</dd>
+	<dd><code>category__in</code> &mdash; array of comma-separated category IDs</dd>
+	<dd><code>category__not_in</code> &mdash; array of comma-separated category IDs</dd>
+
+	<dt>Tag parameters (<a href="http://codex.wordpress.org/Template_Tags/query_posts#Tag_Parameters" title="Tag parameters">Reference</a>)</dt>
+	<dd><code>tag</code> &mdash; tag slug(s)</dd>
+	<dd><code>tag__and</code> &mdash; array of comma-separated tag IDs</dd>
+	<dd><code>tag__in</code> &mdash; array of comma-separated tag IDs</dd>
+	<dd><code>tag_slug__in</code> &mdash; array of comma-separated tag slugs</dd>
+	<dd><code>tag_slug__and</code> &mdash; array of comma-separated tag slugs</dd>
+
+	<dt>Author parameters (<a href="http://codex.wordpress.org/Template_Tags/query_posts#Author_Parameters" title="Author parameters">Reference</a>)</dt>
+	<dd><code>author_name</code> &mdash; user nicename</dd>
+	<dd><code>author</code> &mdash; user ID</dd>
+
+	<dt>Time parameters (<a href="http://codex.wordpress.org/Template_Tags/query_posts#Time_Parameters" title="Time parameters">Reference</a>)</dt>
+	<dd><code>year</code> &mdash; integer</dd>
+	<dd><code>monthnum</code> &mdash; integer</dd>
+	<dd><code>w</code> &mdash; integer</dd>
+	<dd><code>day</code> &mdash; integer</dd>
+	<dd><code>hour</code> &mdash; integer</dd>
+	<dd><code>minute</code> &mdash; integer</dd>
+	<dd><code>second</code> &mdash; integer</dd>
+
+	<dt>Custom field parameters (<a href="http://codex.wordpress.org/Template_Tags/query_posts#Custom_field_Parameters" title="Custom field parameters">Reference</a>)</dt>
+	<dd><code>meta_key</code> &mdash; the name of the custom field key</dd>
+	<dd><code>meta_value</code> &mdash; the value of the custom field</dd>
+	<dd><code>meta_compare</code> &mdash; operator to test the <code>meta_value</code>.</dd>
+
+</dl>
+
+<h2>Creating a completely widgetized page template</h2>
+
+<p>This is <strong>not required</strong> but could be fun to do.</p>
+
+<p>To truly understand how powerful this plugin is, you might want a widgetized page template, or several.  My <a href="http://themehybrid.com/themes/hybrid" title="Hybrid WordPress theme framework">Hybrid theme</a> has one of these.  I'll give you a quick tutorial here.  For more information on page templates, read this <a href="http://justintadlock.com/archives/2009/03/13/page-templates-the-untapped-potential-of-wordpress" title="Page templates: The untapped potential of WordPress">tutorial on page templates</a>.</p>
+
+<p>The first thing you want to do is create a new widget section.  So, open your theme's <code>functions.php</code> file and add this code:</p>
+
+<pre><code>&lt;?php
+register_sidebar( array(
+	'name' => 'Widgets Template',
+	'id' => 'widgets-template',
+	'before' => '&lt;div id="%1$s" class="widget %2$s widget-%2$s"&gt;',
+	'after' => '&lt;/div>',
+	'before_title' => '&lt;h3 class="widget-title"&gt;',
+	'after_title', => '&lt;/h3&gt;'
+) );
+?&gt;</code></pre>
+
+<p>Save your <code>functions.php</code> file.</p>
+
+<p>Then, you need to create a new file in your theme's root folder named <code>page-widgets.php</code>.  The best method is to copy your theme's <code>page.php</code> file and mold this code into it.  Here is an example:</p>
+
+<pre><code>&lt;?php
+/*
+Template Name: Widgets
+*/
+
+get_header(); ?&gt;
+
+	&lt;div class="content"&gt;
+
+		&lt;?php dynamic_sidebar( 'widgets-template' ); ?&gt;
+
+	&lt;/div&gt;
+
+&lt;?php get_footer(); ?&gt;</code></pre>
+
+
+
+<h2>Plugin Support</h2>
+
+<p>I run a WordPress community called <a href="http://themehybrid.com" title="Theme Hybrid">Theme Hybrid</a>, which is where I fully support all of my WordPress projects, including plugins.  You can sign up for an account to get plugin support for a small yearly fee ($25 <acronym title="United States Dollars">USD</acronym> at the time of writing).</p>
+
+<p>I know.  I know.  You might not want to pay for support, but just consider it a donation to the project.  I am fully employed through my work with WordPress, so to continue making cool, <acronym title="GNU General Public License">GPL</acronym>-licensed plugins and having the time to support them, I must pay the bills.</p>
+
+<h2>Copyright &amp; License</h2>
+
+<p><em>Query Posts</em> is licensed under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html" title="GNU GPL">GNU General Public License</a>, version 2 (<acronym title="GNU General Public License">GPL</acronym>).</p>
+
+<p>This plugin is copyrighted to <a href="http://justintadlock.com" title="Justin Tadlock">Justin Tadlock</a>.</p>
+
+<p>2009 &copy; Justin Tadlock</p>
+
+</body>
+</html>
