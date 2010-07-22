@@ -1,0 +1,253 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>A guide to the Query Posts widget</title>
+
+<link rel="stylesheet" href="readme.css" type="text/css" media="screen" />
+
+</head>
+<body>
+
+<h1>A guide to the Query Posts widget</h1>
+
+<p class="first"><em>Query Posts</em> is a widget that allows you to display posts and pages in any way you want.  It is a revolution in how users interact with their site, allowing them to have the power of more-advanced developers at the tip of their fingertips.</p>
+
+<p>WordPress is a wonderful <acronym title="Content Management System">CMS</acronym> to work with, but for end users, it can sometimes be a daunting task trying to make things work just they want.  <em>Query Posts</em> makes WordPress a more robust, yet intuitive, platform for users to work from.</p>
+
+<h2>How to install the plugin</h2>
+
+<ol>
+	<li>Unzip the <code>query-posts.zip</code> folder.</li>
+	<li>Upload the <code>query-posts</code> folder to your <code>/wp-content/plugins</code> directory.</li>
+	<li>In your WordPress dashboard, head over to the <em>Plugins</em> section.</li>
+	<li>Activate <em>Query Posts</em>.</li>
+</ol>
+
+<h2>What does the widget do?</h2>
+
+<p>Basically, it is a wrapper for the <a href="http://codex.wordpress.org/Template_Tags/query_posts" title="WordPress Codex: query_posts()">query_posts()</a> funtion in WordPress.  This is a fairly standard function used, but it requires that end users dive into code to use it.  This plugin provides an interface so that the average user can interact with this function without having to learn the intricacies of the <code>query_posts()</code> template tag and making it work with <em>The Loop</em>.</p>
+
+<p><em>Query Posts</em> is a widget that allows you to select from several options on what posts you'd like to display.  The plugin handles the rest, even the output of your selected data.</p>
+
+<h2>Widget Settings</h2>
+
+<p>There are several settings for the widget.  You need to know how the <a href="http://codex.wordpress.org/Template_Tags/query_posts" title="WordPress Codex: query_posts()">query_posts()</a> function works to use them.  You need at least a very basic understanding of its parameters to even use this widget.</p>
+
+<p>Since the widget has numerous settings, I've broken them down into groups to better understand what each does.</p>
+
+<h3>Miscellaneous Settings</h3>
+
+<p>Several of the settings are not a part of the <code>query_posts()</code> function.  These are additional settings you may select within the widget controls to choose how your posts display.</p>
+
+<ul>
+	<li><strong>Title</strong><br />
+	The title of the widget.</li>
+	<li><strong>Display</strong><br />
+	Choose to show posts in full-post form, excerpt form, in an unordered list, or an ordered list.</li>
+	<li><strong>wp_reset_query</strong><br />
+	If selected, the page query will be reset to the original after the widget is displayed.</li>
+	<li><strong>get_the_image</strong><br />
+	If the <a href="http://wordpress.org/extend/plugins/get-the-image" title="Get the Image WordPress plugin">Get the Image</a> is activated or your theme uses the <code>get_the_image()</code> function, you can select this to show a thumbnail.</li>
+</ul>
+
+<h3>Ordering and Sorting Settings</h3>
+
+<p>The WordPress Codex splits these parameters into four sections:  <a href="http://codex.wordpress.org/Template_Tags/query_posts#Order_Parameters" title="Order parameters">order</a>, <a href="http://codex.wordpress.org/Template_Tags/query_posts#Orderby_Parameters" title="Orderby parameters">orderby</a>, <a href="http://codex.wordpress.org/Template_Tags/query_posts#Pagination_Parameters" title="Pagination parameters">pagination</a> and <a href="http://codex.wordpress.org/Template_Tags/query_posts#Offset_Parameter" title="Offset parameters">offset</a>.  But, I like to group them together because each setting can drastically change how the others work.</p>
+
+<ul>
+
+	<li><strong>showposts</strong><br />
+	The number of posts to display.</li>
+	<li><strong>order</strong><br />
+	Order posts in ascending or descending order.</li>
+	<li><strong>orderby</strong><br />
+	What the posts should be ordered by.</li>
+	<li><strong>offset</strong><br />
+	How many posts to skip over.</li>
+	<li><strong>posts_per_page</strong><br />
+	How many posts per page.</li>
+	<li><strong>paged</strong><br />
+	Show posts from a particular page (i.e. page 1, 2, 3, etc.).</li>
+</ul>
+
+<h3>Post and Page Settings</h3>
+
+<p>The <a href="http://codex.wordpress.org/Template_Tags/query_posts#Post_.26_Page_Parameters" title="Pots and Page parameters">post and page parameters</a> deal directly with the type of content you'd like to display.  Support for attachments should come in the next major version and custom content/post types in the future.</p>
+
+<ul>
+	<li><strong>post_status</strong><br />
+	The published status of the post.</li>
+	<li><strong>post_type</strong><br />
+	Whether the content to display is a post, page, or anything.</li>
+	<li><strong>p</strong><br />
+	Post ID.</li>
+	<li><strong>name</strong><br />
+	Post slug.</li>
+	<li><strong>post_parent</strong><br />
+	Id of the post parent.</li>
+	<li><strong>page_id</strong><br />
+	Page ID.</li>
+	<li><strong>pagename</strong><br />
+	Page path.</li>
+	<li><strong>post__in</strong><br />
+	Comma-separated array of post IDs to include.</li>
+	<li><strong>post__not_in</strong><br />
+	Comma-separated array of post IDs to exclude.</li>
+</ul>
+
+<h3>Sticky Post Settings</h3>
+
+<p>There's only one <a href="http://codex.wordpress.org/Template_Tags/query_posts#Sticky_Post_Parameters" title="Sticky post parameters">sticky post parameter</a> right now.  It allows you to exclude or include sticky posts in your query.</p>
+
+<ul>
+	<li><strong>caller_get_posts</strong><br />
+	True or false (true excludes stickies).</li>
+
+</ul>
+
+<h3>Category Settings</h3>
+
+<p>The <a href="http://codex.wordpress.org/Template_Tags/query_posts#Category_Parameters" title="Category  parameters">category parameters</a> allow you to display posts according to what categories it is in.</p>
+
+<ul>
+
+	<li><strong>cat</strong><br />
+	Comma-separated list of category IDs.</li>
+	<li><strong>category_name</strong><br />
+	Category name/slug.</li>
+	<li><strong>category__and</strong><br />
+	Comma-separated list category IDs.  Posts listed will be in all categories.</li>
+	<li><strong>category__in</strong><br />
+	Comma-separated list of category IDs.  Posts listed can be in any of the categories.</li>
+	<li><strong>category__not_in</strong><br />
+	Comma-separated list of category IDs.  Posts listed will not be in any of the categories.</li>
+</ul>
+
+<h3>Tag Parameters</h3>
+
+<p>The <a href="http://codex.wordpress.org/Template_Tags/query_posts#Tag_Parameters" title="Tag parameters">tag parameters</a> allow you to display posts according to what it has been tagged with.</p>
+
+<ul>
+	<li><strong>tag</strong><br />
+	Comma-separated list of ag slugs.</li>
+	<li><strong>tag__and</strong><br />
+	Comma-separated list tag IDs.  Posts listed will be in all tags.</li>
+	<li><strong>tag__in</strong><br />
+	Comma-separated list of tag IDs.  Posts listed can be in any of the tags.</li>
+	<li><strong>tag_slug__and</strong><br />
+	Comma-separated list of tag slugs.  Posts listed will be in all of the tags.</li>
+	<li><strong>tag_slug__in</strong><br />
+	Comma-separated list of tag slugs.  Posts listed can be in any of the tags.</li>
+</ul>
+
+<h3>Taxonomy Settings</h3>
+
+<p>If you've <a href="http://justintadlock.com/archives/2009/05/06/custom-taxonomies-in-wordpress-28" title="Custom taxonomies in WordPress">created custom taxonomies</a> or have additional taxonomies through plugins for your posts, you'll be able to show posts from a specific taxonomy provided its <code>query_var</code> has not been set to <code>false</code> (not likely).</p>
+
+<ul>
+	<li><strong>$taxonomy</strong><br />
+	Select the term for one specific taxonomy that you'd like to display posts from.</li>
+</ul>
+
+<h3>Author Settings</h3>
+
+<p>If you run a multi-author site, it's sometimes useful to show posts written by a particular author.  You can use the <a href="http://codex.wordpress.org/Template_Tags/query_posts#Author_Parameters" title="Author parameters">author parameters</a> to select those by posts by user ID or user nicename.</p>
+
+<ul>
+	<li><strong>author_name</strong><br />
+	User nicename.</li>
+	<li><strong>author</strong><br />
+	User ID.</li>
+</ul>
+
+<h3>Time Settings</h3>
+
+<p>To grab posts from a certain period of time, select one or more of the <a href="http://codex.wordpress.org/Template_Tags/query_posts#Time_Parameters" title="Time parameters">time parameters</a>.</p>
+
+<ul>
+
+	<li><strong>year</strong><br />
+	Show posts from a specific year.  Input must be four digits.</li>
+	<li><strong>monthnum</strong><br />
+	Show posts from a specific month.</li>
+	<li><strong>w</strong><br />
+	Show posts from a specific w.</li>
+	<li><strong>day</strong><br />
+	Show posts from a specific day.</li>
+	<li><strong>hour</strong><br />
+	Show posts from a specific hour.</li>
+	<li><strong>minute</strong><br />
+	Show posts from a specific minute.</li>
+	<li><strong>second</strong><br />
+	Show posts from a specific second.</li>
+</ul>
+
+<h3>Custom Field Settings</h3>
+
+<p>If you use custom fields with your posts, you might like the <a href="http://codex.wordpress.org/Template_Tags/query_posts#Custom_Field_Parameters" title="Custom field parameters">custom field parameters</a>, which allow you to pull posts by custom field key and value.</p>
+
+<ul>
+	<li><strong>meta_key</strong><br />
+	The name of the custom field key.</li>
+	<li><strong>meta_value</strong><br />
+	The value of the custom field.</li>
+	<li><strong>meta_compare</strong><br />
+	Operator to test the <code>meta_value</code>.</li>
+
+</ul>
+
+<h2>Creating a completely widgetized page template</h2>
+
+<p>This is <strong>not required</strong> but could be fun to do.</p>
+
+<p>To truly understand how powerful this plugin is, you might want a widgetized page template, or several.  My <a href="http://themehybrid.com/themes/hybrid" title="Hybrid WordPress theme framework">Hybrid theme</a> has one of these.  I'll give you a quick tutorial here.  For more information on page templates, read this <a href="http://justintadlock.com/archives/2009/03/13/page-templates-the-untapped-potential-of-wordpress" title="Page templates: The untapped potential of WordPress">tutorial on page templates</a>.</p>
+
+<p>The first thing you want to do is create a new widget section.  So, open your theme's <code>functions.php</code> file and add this code:</p>
+
+<pre><code>&lt;?php
+register_sidebar( array(
+	'name' => 'Widgets Template',
+	'id' => 'widgets-template',
+	'before' => '&lt;div id="%1$s" class="widget %2$s widget-%2$s"&gt;',
+	'after' => '&lt;/div>',
+	'before_title' => '&lt;h3 class="widget-title"&gt;',
+	'after_title', => '&lt;/h3&gt;'
+) );
+?&gt;</code></pre>
+
+<p>Save your <code>functions.php</code> file.</p>
+
+<p>Then, you need to create a new file in your theme's root folder named <code>page-widgets.php</code>.  The best method is to copy your theme's <code>page.php</code> file and mold this code into it.  Here is an example:</p>
+
+<pre><code>&lt;?php
+/*
+Template Name: Widgets
+*/
+
+get_header(); ?&gt;
+
+	&lt;div class="content"&gt;
+
+		&lt;?php dynamic_sidebar( 'widgets-template' ); ?&gt;
+
+	&lt;/div&gt;
+
+&lt;?php get_footer(); ?&gt;</code></pre>
+
+<h2>Plugin Support</h2>
+
+<p>I run a WordPress community called <a href="http://themehybrid.com" title="Theme Hybrid">Theme Hybrid</a>, which is where I fully support all of my WordPress projects, including plugins.  You can sign up for an account to get plugin support for a small yearly fee ($25 <acronym title="United States Dollars">USD</acronym> at the time of writing).</p>
+
+<p>I know.  I know.  You might not want to pay for support, but just consider it a donation to the project.  To continue making cool, <acronym title="GNU General Public License">GPL</acronym>-licensed plugins and having the time to support them, I must pay the bills.</p>
+
+<h2>Copyright &amp; License</h2>
+
+<p><em>Query Posts</em> is licensed under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html" title="GNU GPL">GNU General Public License</a>, version 2 (<acronym title="GNU General Public License">GPL</acronym>).</p>
+
+<p>This plugin is copyrighted to <a href="http://justintadlock.com" title="Justin Tadlock">Justin Tadlock</a>.</p>
+
+<p>2009 &copy; Justin Tadlock</p>
+
+</body>
+</html>
