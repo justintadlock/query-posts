@@ -3,8 +3,8 @@ Contributors: greenshady
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3687060
 Tags: widget, pages, posts, sidebar, page
 Requires at least: 3.0
-Tested up to: 3.0
-Stable tag: 0.3
+Tested up to: 3.0.1
+Stable tag: 0.3.1
 
 A WordPress widget that gives you unlimited control over showing posts and pages.
 
@@ -37,6 +37,15 @@ This plugin is about removing that barrier.
 There's not a lot of work you have to do.  Just add the widget to your theme's widget area(s).  If anything, you'll probably be overwhelmed by the myriad of options.  I've included a handy guide on what each option means with supplemental reading material.  Just check out the `readme.html` included with the plugin download.
 
 == Changelog ==
+
+**Version 0.3.1**
+
+* Fix post types so individual IDs work.
+* Fix `enable_widget_title` for some instances where it didn't work.
+* Fix `post_class` issue for the instances where it didn't work.
+* Make sure correct image size is used.
+* Only use `post_mime_type` when it's set.
+* Use `tag` instead of `tag_slug__in` for the post tag taxonomy.
 
 **Version 0.3**
 

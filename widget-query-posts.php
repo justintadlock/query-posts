@@ -27,7 +27,7 @@ class Query_Posts_Widget extends WP_Widget {
 		$args = array();
 
 		/* Widget title and things not in query arguments. */
-		if ( 'enable_widget_title' )
+		if ( $instance['enable_widget_title'] )
 			$title = apply_filters('widget_title', $instance['title'] );
 		$wp_reset_query = $instance['wp_reset_query'] ? true : false;
 		$the_post_thumbnail = $instance['the_post_thumbnail'] ? true : false;
@@ -38,11 +38,11 @@ class Query_Posts_Widget extends WP_Widget {
 		$args['caller_get_posts'] = $instance['caller_get_posts'] ? '1' : '0';
 
 		/* Posts (by post type). */
-		$post_types = get_post_types( array( 'publicly_queryable' => false ), 'names' );
+		$post_types = get_post_types( array( 'publicly_queryable' => true ), 'names' );
 		$post__in = array();
 		foreach ( $post_types as $type ) {
 			if ( isset( $instance[$type] ) && !empty( $instance[$type] ) ) {
-				$post__in_new[] = explode( ',', $type );
+				$post__in_new = explode( ',', $instance[$type] );
 				$post__in = array_merge( $post__in, $post__in_new );
 			}
 		}
@@ -54,7 +54,7 @@ class Query_Posts_Widget extends WP_Widget {
 			if ( 'category' == $taxonomy && !empty( $instance[$taxonomy] ) )
 				$args['cat'] = $instance[$taxonomy];
 			elseif ( 'post_tag' == $taxonomy && !empty( $instance[$taxonomy] ) )
-				$args['tag_slug__in'] = explode( ',', $instance[$taxonomy] );
+				$args['tag'] = $instance[$taxonomy];
 			elseif ( !empty( $instance[$taxonomy] ) ) {
 				$the_tax = get_taxonomy( $taxonomy );
 				$args[$the_tax->query_var] = $instance[$taxonomy];
@@ -69,7 +69,8 @@ class Query_Posts_Widget extends WP_Widget {
 			$args['post_type'] = $instance['post_type'];
 
 		/* Post mime type. */
-		$args['post_mime_type'] = (array) $instance['post_mime_type'];
+		if ( !empty( $instance['post_mime_type'] ) )
+			$args['post_mime_type'] = (array) $instance['post_mime_type'];
 
 		/* Post status. */
 		if ( $instance['post_status'] )
@@ -152,10 +153,10 @@ class Query_Posts_Widget extends WP_Widget {
 						echo $before_title . "<a href='" . get_permalink() . "' title='" . the_title_attribute( 'echo=0' ) . "' rel='bookmark'>" . apply_filters( 'widget_title', the_title( '', '', false ) ) . "</a>" . $after_title;
 				}
 				elseif ( 'ol' == $instance['entry_container'] || 'ul' == $instance['entry_container'] ) {
-					echo "<li class='{$instance['post_class']}'>";
+					echo "<li class='{$post_class}'>";
 				}
 				elseif ( !empty( $instance['entry_container'] ) ) {
-					echo "<{$instance['entry_container']} class='{$instance['post_class']}'>";
+					echo "<{$instance['entry_container']} class='{$post_class}'>";
 				}
 
 				/* Post thumbnails. */
@@ -429,7 +430,10 @@ class Query_Posts_Widget extends WP_Widget {
 		query_posts_input_checkbox( __( 'Enable post thumbnails', 'query-posts' ), $this->get_field_id( 'the_post_thumbnail' ), $this->get_field_name( 'the_post_thumbnail' ), checked( $instance['the_post_thumbnail'], true, false ) );
 
 		/* Thumbnail size. */
-		query_posts_select_single( 'size', $this->get_field_id( 'size' ), $this->get_field_name( 'size' ), $instance['size'], get_intermediate_image_sizes(), false );
+		$sizes = array();
+		foreach ( get_intermediate_image_sizes() as $image_size )
+			$sizes[$image_size] = $image_size;
+		query_posts_select_single( 'size', $this->get_field_id( 'size' ), $this->get_field_name( 'size' ), $instance['size'], $sizes, false );
 
 		/* Entry title. */
 		query_posts_input_checkbox( __( 'Enable entry titles', 'query-posts' ), $this->get_field_id( 'show_entry_title' ), $this->get_field_name( 'show_entry_title' ), checked( $instance['show_entry_title'], true, false ) );
