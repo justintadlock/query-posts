@@ -10,16 +10,26 @@
 /**
  * Output of the Query Posts widget.
  *
- * @since 0.2
+ * @since 0.2.0
  */
 class Query_Posts_Widget extends WP_Widget {
 
+	/**
+	 * PHP4 constructor method.
+	 *
+	 * @since 0.2.0
+	 */
 	function Query_Posts_Widget() {
 		$widget_ops = array( 'classname' => 'posts', 'description' => __( 'Display posts and pages however you want.', 'query-posts' ) );
 		$control_ops = array( 'width' => 810, 'height' => 350, 'id_base' => 'query-posts' );
 		$this->WP_Widget( 'query-posts', __( 'Query Posts', 'query-posts' ), $widget_ops, $control_ops );
 	}
 
+	/**
+	 * Displays the widget on the front end.
+	 *
+	 * @since 0.2.0
+	 */
 	function widget( $args, $instance ) {
 		extract( $args );
 
@@ -29,9 +39,17 @@ class Query_Posts_Widget extends WP_Widget {
 		/* Widget title and things not in query arguments. */
 		if ( $instance['enable_widget_title'] )
 			$title = apply_filters('widget_title', $instance['title'] );
+
+		/* Whether to reset $wp_query. */
 		$wp_reset_query = $instance['wp_reset_query'] ? true : false;
+
+		/* Whether to use post thumbnails. */
 		$the_post_thumbnail = $instance['the_post_thumbnail'] ? true : false;
+
+		/* Whether to show the post title. */
 		$show_entry_title = $instance['show_entry_title'] ? true : false;
+
+		/* Whether to show page links. */
 		$wp_link_pages = $instance['wp_link_pages'] ? true : false;
 
 		/* Sticky posts. */
@@ -51,10 +69,16 @@ class Query_Posts_Widget extends WP_Widget {
 		/* Taxonomies. */
 		$taxonomies = query_posts_get_taxonomies();
 		foreach ( $taxonomies as $taxonomy ) {
+
+			/* If 'category' is the taxonomy. */
 			if ( 'category' == $taxonomy && !empty( $instance[$taxonomy] ) )
 				$args['cat'] = $instance[$taxonomy];
+
+			/* If 'post_tag' is the taxonomy. */
 			elseif ( 'post_tag' == $taxonomy && !empty( $instance[$taxonomy] ) )
 				$args['tag'] = $instance[$taxonomy];
+
+			/* All other taxonomies. */
 			elseif ( !empty( $instance[$taxonomy] ) ) {
 				$the_tax = get_taxonomy( $taxonomy );
 				$args[$the_tax->query_var] = $instance[$taxonomy];
@@ -125,10 +149,13 @@ class Query_Posts_Widget extends WP_Widget {
 			echo $before_widget;
 
 			if ( $title )
-				echo $before_title . $title . $after_title;
+				echo $before_title . apply_filters( 'widget_title',  $title, $instance, $this->id_base ) . $after_title;
 		}
 
+		/* The global $more is so that the <!--more--> quicktag works. */
 		global $more;
+
+		/* Query posts. */
 		$new_query = new WP_Query( $args );
 
 		/* If posts were found, let's loop through them. */
@@ -162,7 +189,8 @@ class Query_Posts_Widget extends WP_Widget {
 				/* Post thumbnails. */
 				if ( $the_post_thumbnail && function_exists( 'get_the_image' ) )
 					get_the_image( array( 'custom_key' => array( 'Thumbnail', 'thumbnail' ), 'default_size' => $instance['size'] ) );
-				elseif ( $the_post_thumbnail ) {
+
+				elseif ( $the_post_thumbnail && current_theme_supports( 'post-thumbnails' ) ) {
 					echo '<a href="' . get_permalink() . '" title="' . the_title_attribute( 'echo=0' ) . '">';
 					the_post_thumbnail( $instance['size'] );
 					echo '</a>';
@@ -248,6 +276,11 @@ class Query_Posts_Widget extends WP_Widget {
 			echo $after_widget;
 	}
 
+	/**
+	 * Saves the widget settings.
+	 *
+	 * @since 0.2.0
+	 */
 	function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
 
@@ -278,10 +311,16 @@ class Query_Posts_Widget extends WP_Widget {
 		return $instance;
 	}
 
+	/**
+	 * Displays the widget settings form.
+	 *
+	 * @since 0.2.0
+	 */
 	function form( $instance ) {
 
 		/* Set up the defaults. */
 		$defaults = array(
+			'title' => '',
 			'display' => 'ul',
 			'post_status' => array( 'publish' ),
 			'post_type' => array( 'post' ),
@@ -291,6 +330,10 @@ class Query_Posts_Widget extends WP_Widget {
 			'caller_get_posts' => true,
 			'posts_per_page' => get_option( 'posts_per_page' ),
 			'offset' => '0',
+			'paged' => '',
+			'post_parent' => '',
+			'meta_key' => '',
+			'meta_value' => '',
 			'author' => '',
 			'wp_reset_query' => true,
 			'meta_compare' => '',
@@ -303,6 +346,7 @@ class Query_Posts_Widget extends WP_Widget {
 			'second' => '',
 			'enable_widget_title' => true,
 			'entry_container' => 'div',
+			'post_class' => '',
 			'the_post_thumbnail' => true,
 			'size' => 'thumbnail',
 			'show_entry_title' => true,
@@ -339,7 +383,7 @@ class Query_Posts_Widget extends WP_Widget {
 		/* Post types. */
 		$post_types = array( 'any' => __( 'Any', 'query-posts' ) );
 		foreach ( get_post_types( array( 'publicly_queryable' => true ), 'objects' ) as $post_type ) {
-			$type_label = ( ( $post_type->singular_label ) ? $post_type->singular_label : $post_type->label );
+			$type_label = ( ( $post_type->labels->singular_name ) ? $post_type->labels->singular_name : $post_type->labels->name );
 			$post_types[$post_type->name] = $type_label;
 		}
 		query_posts_select_multiple( 'post_type', $this->get_field_id( 'post_type' ), $this->get_field_name( 'post_type' ), $instance['post_type'], $post_types, false );
@@ -426,14 +470,19 @@ class Query_Posts_Widget extends WP_Widget {
 		/* Post class. */
 		query_posts_input_text_small( 'post_class', $this->get_field_id( 'post_class' ), $this->get_field_name( 'post_class' ), $instance['post_class'] );
 
-		/* Post thumbnails. */
-		query_posts_input_checkbox( __( 'Enable post thumbnails', 'query-posts' ), $this->get_field_id( 'the_post_thumbnail' ), $this->get_field_name( 'the_post_thumbnail' ), checked( $instance['the_post_thumbnail'], true, false ) );
 
-		/* Thumbnail size. */
-		$sizes = array();
-		foreach ( get_intermediate_image_sizes() as $image_size )
-			$sizes[$image_size] = $image_size;
-		query_posts_select_single( 'size', $this->get_field_id( 'size' ), $this->get_field_name( 'size' ), $instance['size'], $sizes, false );
+		/* Only show thumbnail settings if supported. */
+		if ( current_theme_supports( 'post-thumbnails' ) || function_exists( 'get_the_image' ) ) {
+
+			/* Post thumbnails. */
+			query_posts_input_checkbox( __( 'Enable post thumbnails', 'query-posts' ), $this->get_field_id( 'the_post_thumbnail' ), $this->get_field_name( 'the_post_thumbnail' ), checked( $instance['the_post_thumbnail'], true, false ) );
+
+			/* Thumbnail size. */
+			$sizes = array();
+			foreach ( get_intermediate_image_sizes() as $image_size )
+				$sizes[$image_size] = $image_size;
+			query_posts_select_single( 'size', $this->get_field_id( 'size' ), $this->get_field_name( 'size' ), $instance['size'], $sizes, false );
+		}
 
 		/* Entry title. */
 		query_posts_input_checkbox( __( 'Enable entry titles', 'query-posts' ), $this->get_field_id( 'show_entry_title' ), $this->get_field_name( 'show_entry_title' ), checked( $instance['show_entry_title'], true, false ) );
@@ -474,7 +523,7 @@ class Query_Posts_Widget extends WP_Widget {
 
 		foreach ( $post_types as $type ) {
 			echo '<div style="float:left;width:18.4%;margin-right:' . ( ++$i % 5 ? '2' : '0' ) . '%;">';
-			query_posts_input_text( $type, $this->get_field_id( $type ), $this->get_field_name( $type ), $instance[$type] );
+			query_posts_input_text( $type, $this->get_field_id( $type ), $this->get_field_name( $type ), ( isset( $instance[$type] ) ? $instance[$type] : '' ) );
 			echo '</div>';
 		}
 
@@ -485,13 +534,11 @@ class Query_Posts_Widget extends WP_Widget {
 		$i = 0;
 		foreach ( $taxonomies as $taxonomy ) {
 			echo '<div style="float:left;width:18.4%;margin-right:' . ( ++$i % 5 ? '2' : '0' ) . '%;">';
-			query_posts_input_text( $taxonomy, $this->get_field_id( $taxonomy ), $this->get_field_name( $taxonomy ), $instance[$taxonomy] );
+			query_posts_input_text( $taxonomy, $this->get_field_id( $taxonomy ), $this->get_field_name( $taxonomy ), ( isset( $instance[$taxonomy] ) ? $instance[$taxonomy] : '' ) );
 			echo '</div>';
 		}
 
 		?></div>
-
-
 		<div style="clear:both;">&nbsp;</div>
 	<?php
 	}

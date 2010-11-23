@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Query Posts
  * Plugin URI: http://justintadlock.com/archives/2009/03/15/query-posts-widget-wordpress-plugin
- * Description: A widget that allows you to show posts/pages in any way you'd like on your site.
- * Version: 0.3.1
+ * Description: A widget that allows you to show posts (or any post type) in any way you'd like on your site.
+ * Version: 0.3.2
  * Author: Justin Tadlock
  * Author URI: http://justintadlock.com
  *
@@ -12,17 +12,19 @@
  * areas.  This can be used to make simple lists in the sidebar, but it is so much more than that.  
  * Essentially, one could run a completely widgetized site with this plugin.
  *
- * @copyright 2009 - 2010
- * @version 0.3.1
- * @author Justin Tadlock
- * @link http://justintadlock.com/archives/2009/03/15/query-posts-widget-wordpress-plugin
- * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
+ * General Public License version 2, as published by the Free Software Foundation.  You may NOT assume 
+ * that you can use any other version of the GPL.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * @package QueryPosts
+ * @version 0.3.2
+ * @author Justin Tadlock <justin@justintadlock.com>
+ * @copyright Copyright (c) 2008 - 2010, Justin Tadlock
+ * @link http://justintadlock.com/archives/2009/03/15/query-posts-widget-wordpress-plugin
+ * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
 /* Launch the plugin. */
@@ -32,7 +34,7 @@ add_action( 'plugins_loaded', 'query_posts_setup' );
  * Initialize the plugin.  This function loads the required files needed for the plugin
  * to run in the proper order.
  *
- * @since 0.3
+ * @since 0.3.0
  */
 function query_posts_setup() {
 
@@ -52,7 +54,7 @@ function query_posts_setup() {
 /**
 * Loads all the widget files at appropriate time. Calls the register function for each widget.
 *
-* @since 0.1
+* @since 0.1.0
 */
 function query_posts_load_widgets() {
 	require_once( QUERY_POSTS_DIR . 'widget-query-posts.php' );
@@ -62,7 +64,7 @@ function query_posts_load_widgets() {
 /**
  * Check if specific shortcodes exist. If not, create them.
  *
- * @since 0.1
+ * @since 0.1.0
  */
 function query_posts_shortcodes() {
 	global $shortcode_tags;
@@ -89,7 +91,7 @@ function query_posts_shortcodes() {
 /**
  * Displays the edit link for an individual post.
  *
- * @since 0.3
+ * @since 0.3.0
  * @param array $attr
  */
 function query_posts_entry_edit_link_shortcode( $attr ) {
@@ -109,7 +111,7 @@ function query_posts_entry_edit_link_shortcode( $attr ) {
 /**
  * Displays the published date of an individual post.
  *
- * @since 0.3
+ * @since 0.3.0
  * @param array $attr
  */
 function query_posts_entry_published_shortcode( $attr ) {
@@ -123,7 +125,7 @@ function query_posts_entry_published_shortcode( $attr ) {
 /**
  * Displays a post's number of comments wrapped in a link to the comments area.
  *
- * @since 0.3
+ * @since 0.3.0
  * @param array $attr
  */
 function query_posts_entry_comments_link_shortcode( $attr ) {
@@ -152,7 +154,7 @@ function query_posts_entry_comments_link_shortcode( $attr ) {
 /**
  * Displays an individual post's author with a link to his or her archive.
  *
- * @since 0.3
+ * @since 0.3.0
  * @param array $attr
  */
 function query_posts_entry_author_shortcode( $attr ) {
@@ -164,7 +166,7 @@ function query_posts_entry_author_shortcode( $attr ) {
 /**
  * Displays a list of terms for a specific taxonomy.
  *
- * @since 0.3
+ * @since 0.3.0
  * @param array $attr
  */
 function query_posts_entry_terms_shortcode( $attr ) {
@@ -182,7 +184,7 @@ function query_posts_entry_terms_shortcode( $attr ) {
  * Returns taxonomies that have $query_var set for the various post types of the current
  * WordPress installation.
  *
- * @since 0.3
+ * @since 0.3.0
  * @return array $out Array of available taxonomy names.
  */
 function query_posts_get_taxonomies() {
@@ -210,18 +212,18 @@ function query_posts_get_taxonomies() {
 /**
  * Creates a form label with the given parameters for use with the widget.
  *
- * @since 0.3
+ * @since 0.3.0
  * @param string $label
  * @param string|int $id
  */
 function query_posts_label( $label, $id ) {
-	echo "<label for='{$id}'><code>{$label}</code></label>";
+	echo '<label for="' . esc_attr( $id ) . '"><code>' . $label . '</code></label>';
 }
 
 /**
  * Creates a form checkbox for use with the widget.
  *
- * @since 0.3
+ * @since 0.3.0
  * @param string $label
  * @param string|int $id
  * @param string $name
@@ -229,8 +231,8 @@ function query_posts_label( $label, $id ) {
  */
 function query_posts_input_checkbox( $label, $id, $name, $checked ) {
 	echo "\n\t\t\t<p>";
-	echo "<label for='{$id}' style='font-size:9px;'>";
-	echo "<input type='checkbox' id='{$id}' name='{$name}' {$checked} /> ";
+	echo '<label for="' . esc_attr( $id ) . '" style="font-size:9px;">';
+	echo '<input type="checkbox" id="' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" ' . $checked . ' />';
 	echo "{$label}</label>";
 	echo '</p>';
 }
@@ -238,7 +240,7 @@ function query_posts_input_checkbox( $label, $id, $name, $checked ) {
 /**
  * Creates a textarea for use with the widget
  *
- * @since 0.3
+ * @since 0.3.0
  * @param string $label
  * @param string|int $id
  * @param string $name
@@ -247,14 +249,14 @@ function query_posts_input_checkbox( $label, $id, $name, $checked ) {
 function query_posts_textarea( $label, $id, $name, $value ) {
 	echo "\n\t\t\t<p>";
 	query_posts_label( $label, $id );
-	echo "<textarea id='{$id}' name='{$name}' rows='2' cols='10' class='widefat code' style='width:100%;height:3.5em;'>" . esc_attr( $value ) . "</textarea>";
+	echo "<textarea id='" . esc_attr( $id ) . "' name='" . esc_attr( $name ) . "' rows='2' cols='10' class='widefat code' style='width:100%;height:3.5em;'>" . esc_html( $value ) . "</textarea>";
 	echo '</p>';
 }
 
 /**
  * Creates a form text input for use with the widget.
  *
- * @since 0.3
+ * @since 0.3.0
  * @param string $label
  * @param string|int $id
  * @param string $name
@@ -263,14 +265,14 @@ function query_posts_textarea( $label, $id, $name, $value ) {
 function query_posts_input_text( $label, $id, $name, $value ) {
 	echo "\n\t\t\t<p>";
 	query_posts_label( $label, $id );
-	echo "<input type='text' id='{$id}' name='{$name}' value='" . esc_attr( $value ) . "' class='code widefat' />";
+	echo "<input type='text' id='" . esc_attr( $id ) . "' name='" . esc_attr( $name ) . "' value='" . esc_attr( $value ) . "' class='code widefat' />";
 	echo '</p>';
 }
 
 /**
  * Creates a small text input for use with the widget.
  *
- * @since 0.3
+ * @since 0.3.0
  * @param string $label
  * @param string|int $id
  * @param string $name
@@ -279,14 +281,14 @@ function query_posts_input_text( $label, $id, $name, $value ) {
 function query_posts_input_text_small( $label, $id, $name, $value ) {
 	echo "\n\t\t\t<p>";
 	query_posts_label( $label, $id );
-	echo "<input type='text' id='{$id}' name='{$name}' value='" . esc_attr( $value ) . "' size='6' style='float: right; width: 50px;' class='code' />";
+	echo "<input type='text' id='" . esc_attr( $id ) . "' name='" . esc_attr( $name ) . "' value='" . esc_attr( $value ) . "' size='6' style='float: right; width: 50px;' class='code' />";
 	echo '</p>';
 }
 
 /**
  * Creates a multiple slect box for use with the widget.
  *
- * @since 0.3
+ * @since 0.3.0
  * @param string $label
  * @param string|int $id
  * @param string $name
@@ -303,10 +305,10 @@ function query_posts_select_multiple( $label, $id, $name, $value, $options, $bla
 
 	echo "\n\t\t\t<p>";
 	query_posts_label( $label, $id );
-	echo "<select id='{$id}' name='{$name}[]' multiple='multiple' size='4' style='width:100%;height:5.0em;'>";
+	echo "<select id='" . esc_attr( $id ) . "' name='" . esc_attr( $name ) . "[]' multiple='multiple' size='4' style='width:100%;height:5.0em;'>";
 
 	foreach ( $options as $option_value => $option_label )
-		echo "<option value='" . ( ( $option_value ) ? $option_value : $option_label ) . "'" . ( ( in_array( $option_value, $value ) || in_array( $option_label, $value ) ) ? " selected='selected'" : '' ) . ">{$option_label}</option>";
+		echo "<option value='" . esc_attr( ( ( $option_value ) ? $option_value : $option_label ) ) . "'" . ( ( in_array( $option_value, $value ) || in_array( $option_label, $value ) ) ? " selected='selected'" : '' ) . ">" . esc_html( $option_label ) . "</option>";
 
 	echo '</select>';
 	echo '</p>';
@@ -315,7 +317,7 @@ function query_posts_select_multiple( $label, $id, $name, $value, $options, $bla
 /**
  * Creates a single slect box for use with the widget.
  *
- * @since 0.3
+ * @since 0.3.0
  * @param string $label
  * @param string|int $id
  * @param string $name
@@ -335,12 +337,12 @@ function query_posts_select_single( $label, $id, $name, $value, $options, $blank
 
 	echo "\n\t\t\t<p>";
 	query_posts_label( $label, $id );
-	echo "<select id='{$id}' name='{$name}' class='{$class}' style='{$style}'>";
+	echo "<select id='" . esc_attr( $id ) . "' name='" . esc_attr( $name ) . "' class='{$class}' style='{$style}'>";
 
 	foreach ( $options as $option_value => $option_label ) {
 		$option_value = (string) $option_value;
 		$option_label = (string) $option_label;
-		echo "<option value='" . ( ( $option_value ) ? $option_value : $option_label ) . "'" . ( ( $value == $option_value || $value == $option_label ) ? " selected='selected'" : '' ) . ">{$option_label}</option>";
+		echo "<option value='" . esc_attr( ( ( $option_value ) ? $option_value : $option_label ) ) . "'" . ( ( $value == $option_value || $value == $option_label ) ? " selected='selected'" : '' ) . ">" . esc_html( $option_label ) . "</option>";
 	}
 
 	echo '</select>';
