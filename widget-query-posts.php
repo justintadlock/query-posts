@@ -175,7 +175,7 @@ class Query_Posts_Widget extends WP_Widget {
 				/* Post container. */
 				if ( 'widget' == $instance['entry_container'] ) {
 					$before_widget = preg_replace( '/id="[^"]*"/','', $before_widget );
-					echo preg_replace( '/class="[^"]*"/', "class=\"{$post_class}\"", $before_widget );
+					echo preg_replace( '/class="[^"]*"/', "class=\"{$post_class}\"", $before_widget, 1 );
 					if ( $show_entry_title )
 						echo $before_title . "<a href='" . get_permalink() . "' title='" . the_title_attribute( 'echo=0' ) . "' rel='bookmark'>" . apply_filters( 'widget_title', the_title( '', '', false ) ) . "</a>" . $after_title;
 				}

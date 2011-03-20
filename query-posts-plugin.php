@@ -3,7 +3,7 @@
  * Plugin Name: Query Posts
  * Plugin URI: http://justintadlock.com/archives/2009/03/15/query-posts-widget-wordpress-plugin
  * Description: A widget that allows you to show posts (or any post type) in any way you'd like on your site.
- * Version: 0.3.2
+ * Version: 0.3.3
  * Author: Justin Tadlock
  * Author URI: http://justintadlock.com
  *
@@ -20,9 +20,9 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * @package QueryPosts
- * @version 0.3.2
+ * @version 0.3.3
  * @author Justin Tadlock <justin@justintadlock.com>
- * @copyright Copyright (c) 2008 - 2010, Justin Tadlock
+ * @copyright Copyright (c) 2008 - 2011, Justin Tadlock
  * @link http://justintadlock.com/archives/2009/03/15/query-posts-widget-wordpress-plugin
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
