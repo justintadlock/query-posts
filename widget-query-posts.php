@@ -7,6 +7,15 @@
  * @package QueryPosts
  */
 
+/******************* !IMPORTANT **************
+See: http://themehybrid.com/support/topic/query-posts-generated-html#post-55962
+http://themehybrid.com/support/topic/query-posts-by-blog-id-for-multisite-and
+*** Make sure to use 'suppress_filters'
+http://wordpress.org/support/topic/plugin-query-posts-page-option-not-available-in-wordpress-32-version?replies=3
+****
+@todo http://themehybrid.com/support/topic/query-posts-by-blog-id-for-multisite-and
+**/
+
 /**
  * Output of the Query Posts widget.
  *
@@ -52,8 +61,11 @@ class Query_Posts_Widget extends WP_Widget {
 		/* Whether to show page links. */
 		$wp_link_pages = $instance['wp_link_pages'] ? true : false;
 
-		/* Sticky posts. */
-		$args['caller_get_posts'] = $instance['caller_get_posts'] ? '1' : '0';
+		/* Sticky posts. (Note: 'caller_get_posts' is deprecated.  Replaced with 'ignore_sticky_posts' in WP 3.1. ) */
+		$args['ignore_sticky_posts'] = $instance['caller_get_posts'] ? '1' : '0';
+
+		/* Suppress filters. */
+		$args['suppress_filters'] = $instance['suppress_filters'] ? true : false;
 
 		/* Posts (by post type). */
 		$post_types = get_post_types( array( 'publicly_queryable' => true ), 'names' );
@@ -151,6 +163,10 @@ class Query_Posts_Widget extends WP_Widget {
 			if ( $title )
 				echo $before_title . apply_filters( 'widget_title',  $title, $instance, $this->id_base ) . $after_title;
 		}
+
+		/* Switch to blog if a blog ID was set. */
+		if ( is_multisite() && !empty( $instance['blog_id'] ) )
+			switch_to_blog( absint( $instance['blog_id'] ) );
 
 		/* The global $more is so that the <!--more--> quicktag works. */
 		global $more;
@@ -271,6 +287,10 @@ class Query_Posts_Widget extends WP_Widget {
 		if ( $wp_reset_query )
 			wp_reset_query();
 
+		/* Switch to back to original blog if a blog ID was set. */
+		if ( is_multisite() && !empty( $instance['blog_id'] ) )
+			restore_current_blog();
+
 		/* Close widget. */
 		if ( 'widget' !== $instance['entry_container'] )
 			echo $after_widget;
@@ -296,7 +316,11 @@ class Query_Posts_Widget extends WP_Widget {
 		$instance['p'] = strip_tags( $new_instance['p'] );
 		$instance['year'] = strip_tags( $new_instance['year'] );
 
+		if ( isset( $new_instance['blog_id'] ) )
+			$instance['blog_id'] = strip_tags( $new_instance['blog_id'] );
+
 		/* Checkboxes. */
+		$instance['suppress_filters'] = ( isset( $new_instance['suppress_filters'] ) ? 1 : 0 );
 		$instance['the_post_thumbnail'] = ( isset( $new_instance['the_post_thumbnail'] ) ? 1 : 0 );
 		$instance['wp_reset_query'] = ( isset( $new_instance['wp_reset_query'] ) ? 1 : 0 );
 		$instance['caller_get_posts'] = ( isset( $new_instance['caller_get_posts'] ) ? 1 : 0 );
@@ -344,6 +368,8 @@ class Query_Posts_Widget extends WP_Widget {
 			'hour' => '',
 			'minute' => '',
 			'second' => '',
+			'blog_id' => '',
+			'suppress_filters' => true,
 			'enable_widget_title' => true,
 			'entry_container' => 'div',
 			'post_class' => '',
@@ -370,7 +396,7 @@ class Query_Posts_Widget extends WP_Widget {
 		query_posts_select_single( 'order', $this->get_field_id( 'order' ), $this->get_field_name( 'order' ), $instance['order'], array( 'ASC' => __( 'Ascending', 'query-posts' ), 'DESC' => __( 'Descending', 'query-posts' ) ), false );
 
 		/* Order By. */
-		$orderby_options = array( 'author' => __( 'Author', 'query-posts' ), 'comment_count' => __( 'Comment Count', 'query-posts' ), 'date' => __( 'Date', 'query-posts' ), 'ID' => __( 'ID', 'query-posts' ), 'menu_order' => __( 'Menu Order', 'query-posts' ), 'meta_value' => __( 'Meta Value', 'query-posts' ), 'modified' => __( 'Modified', 'query-posts' ), 'none' => __( 'None', 'query-posts' ), 'parent' => __( 'Parent', 'query-posts' ), 'rand' => __( 'Random', 'query-posts' ), 'title' => __( 'Title', 'query-posts' ) );
+		$orderby_options = array( 'author' => __( 'Author', 'query-posts' ), 'comment_count' => __( 'Comment Count', 'query-posts' ), 'date' => __( 'Date', 'query-posts' ), 'ID' => __( 'ID', 'query-posts' ), 'menu_order' => __( 'Menu Order', 'query-posts' ), 'meta_value' => __( 'Meta Value', 'query-posts' ), 'meta_value_num' => __( 'Meta Value (Numerical)', 'query-posts' ), 'modified' => __( 'Modified', 'query-posts' ), 'none' => __( 'None', 'query-posts' ), 'parent' => __( 'Parent', 'query-posts' ), 'rand' => __( 'Random', 'query-posts' ), 'title' => __( 'Title', 'query-posts' ) );
 		query_posts_select_single( 'orderby', $this->get_field_id( 'orderby' ), $this->get_field_name( 'orderby' ), $instance['orderby'], $orderby_options, false );
 
 		/* Post statuses. */
@@ -456,9 +482,17 @@ class Query_Posts_Widget extends WP_Widget {
 		/* Pagination / Reset Query. */
 		query_posts_input_checkbox( __( 'Reset query', 'query-posts' ), $this->get_field_id( 'wp_reset_query' ), $this->get_field_name( 'wp_reset_query' ), checked( $instance['wp_reset_query'], true, false ) );
 
-		?></div>
+?>
+</div>
 
 		<div style="float:left;width:18.4%;margin-left:2%;"><?php
+
+		/* Blog ID if multisite. */
+		if ( is_multisite() )
+			query_posts_input_text_small( 'blog_id', $this->get_field_id( 'blog_id' ), $this->get_field_name( 'blog_id' ), $instance['blog_id'] );
+
+		/* Suppress filters. */
+		query_posts_input_checkbox( __( 'Suppress filters', 'query-posts' ), $this->get_field_id( 'suppress_filters' ), $this->get_field_name( 'suppress_filters' ), checked( $instance['suppress_filters'], true, false ) );
 
 		/* Show widget title. */
 		query_posts_input_checkbox( __( 'Enable widget title', 'query-posts' ), $this->get_field_id( 'enable_widget_title' ), $this->get_field_name( 'enable_widget_title' ), checked( $instance['enable_widget_title'], true, false ) );
@@ -470,27 +504,33 @@ class Query_Posts_Widget extends WP_Widget {
 		/* Post class. */
 		query_posts_input_text_small( 'post_class', $this->get_field_id( 'post_class' ), $this->get_field_name( 'post_class' ), $instance['post_class'] );
 
+		/* Entry title. */
+		//query_posts_input_checkbox( __( 'Enable entry titles', 'query-posts' ), $this->get_field_id( 'show_entry_title' ), $this->get_field_name( 'show_entry_title' ), checked( $instance['show_entry_title'], true, false ) );
+
+		/* Entry title markup. */
+		$elements = array( 'h1' => 'h1', 'h2' => 'h2', 'h3' => 'h3', 'h4' => 'h4', 'h5' => 'h5', 'h6' => 'h6', 'p' => 'p', 'div' => 'div', 'span' => 'span', 'disable' => __( 'Disable Title', 'query-posts' ) );
+		query_posts_select_single( 'entry_title', $this->get_field_id( 'entry_title' ), $this->get_field_name( 'entry_title' ), $instance['entry_title'], $elements, true );
+
 
 		/* Only show thumbnail settings if supported. */
 		if ( current_theme_supports( 'post-thumbnails' ) || function_exists( 'get_the_image' ) ) {
-
-			/* Post thumbnails. */
-			query_posts_input_checkbox( __( 'Enable post thumbnails', 'query-posts' ), $this->get_field_id( 'the_post_thumbnail' ), $this->get_field_name( 'the_post_thumbnail' ), checked( $instance['the_post_thumbnail'], true, false ) );
+/*
+		<p>
+		<label for="<?php echo $this->get_field_id( 'the_post_thumbnail' ); ?>" style="font-size:9px;">
+			<input type="checkbox" id="<?php echo $this->get_field_id( 'the_post_thumbnail' ); ?>" name="<?php echo $this->get_field_name( 'the_post_thumbnail' ); ?>" <?php checked( $instance['the_post_thumbnail'], true, true ); ?> />
+			<?php _e( 'Enable featured image', 'query-posts' ); ?>
+		</label>
+		</p>
+<?php */
 
 			/* Thumbnail size. */
-			$sizes = array();
+			$sizes = array( '' => '' );
 			foreach ( get_intermediate_image_sizes() as $image_size )
 				$sizes[$image_size] = $image_size;
 			query_posts_select_single( 'size', $this->get_field_id( 'size' ), $this->get_field_name( 'size' ), $instance['size'], $sizes, false );
-		}
 
-		/* Entry title. */
-		query_posts_input_checkbox( __( 'Enable entry titles', 'query-posts' ), $this->get_field_id( 'show_entry_title' ), $this->get_field_name( 'show_entry_title' ), checked( $instance['show_entry_title'], true, false ) );
-
-		/* Entry title markup. */
-		$elements = array( 'h1' => 'h1', 'h2' => 'h2', 'h3' => 'h3', 'h4' => 'h4', 'h5' => 'h5', 'h6' => 'h6', 'p' => 'p', 'div' => 'div', 'span' => 'span' );
-		query_posts_select_single( 'entry_title', $this->get_field_id( 'entry_title' ), $this->get_field_name( 'entry_title' ), $instance['entry_title'], $elements, true, 'smallfat', 'float:right;' );
-
+	?>
+<?php } // end thumbnail support check
 		?></div>
 
 		<div style="float:left;width:18.4%;margin-left:2%;"><?php
